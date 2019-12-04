@@ -1,0 +1,250 @@
+---
+title: "Format files"
+output: html_notebook
+---
+
+2019-07-23
+
+Downloaded the entire DAP-Seq gene targets file from the [Plant Cistrome Database](http://neomorph.salk.edu/dap_web/pages/browse_table_aj.php).
+
+2019-07-24
+
+Used the Search function to put all files into one folder (```input/targetlists```).
+
+Files in format ```chr1-5_GEM_events.nS_targets (i).txt```, where ```i``` is a number
+
+Want to rename so they are just ```i.text```.
+
+```{r rename files}
+for (i in 1:length(dir("input/targetlists")))
+{
+  file.rename(paste("input/targetlists/", dir("input/targetlists")[i], sep = ""),
+              paste("input/targetlists/", i, ".txt", sep = ""))
+}
+```
+
+Need to put all files together into one large master data frame.
+
+```{r build master}
+alltarg <- read.delim("input/targetlists/1.txt")
+
+head(alltarg)
+
+for(i in 2:length(dir("input/targetlists")))
+{
+  new <- read.delim(paste("input/targetlists/", i, ".txt", sep = ""))
+  
+  alltarg <- rbind(alltarg, new)
+}
+```
+
+Some of the TFs had multiple target lists (from slightly different DAP-Seq methods). I want to keep all potential targets from all potential methods, but I don't want duplicate entries (same TF, same target), so I will keep only unique entries.
+
+Note: started with 3,685,526 entries
+
+```{r master unique}
+require(dplyr)
+
+alltarg <- alltarg %>% distinct()
+
+# I want to rename the headers to be easier to work with
+
+colnames(alltarg) <- c("TF", "target")
+
+write.csv(alltarg,"input/alltarg.txt")
+```
+
+Ended up with 2,848,928 entries.
+
+This makes sense given that the total number of peaks reported for the number of peaks for the two methods are	2,718,632 and 2,284,686. There seems to be considerable overlap in the two methods, but with some unique entries from each.
+
+Now I need a unique list of all TFs.
+
+```{r unique TFs}
+alltarg <- read.csv("input/alltarg.txt", header = TRUE, row.names = 1)
+
+TFlist <- as.character(unique(alltarg$TF))
+
+length(TFlist)
+```
+
+I need to count the total number of targets for each TF, so I can calculate a ratio of target genes to the whole genome.
+
+```{r count targets}
+# Make an empty data frame called targcounts
+targcounts <- data.frame(matrix(nrow=length(TFlist), ncol=2))
+colnames(targcounts) <- c("TF", "totaltargets")
+
+# For each TF in TFlist, count the number of entries for that TF in alltarg, and add it to targcounts
+for (i in 1:length(TFlist))
+{
+  targcounts$TF[i] <- TFlist[i]
+  
+  targcounts$totaltargets[i] <- nrow(alltarg[which(alltarg$TF == TFlist[i]),])
+}
+```
+
+I want a ratio of these counts to the total number of *Arabidopsis* genes.
+
+According to [Araport 11](https://www.arabidopsis.org/download/index-auto.jsp?dir=%2Fdownload_files%2FGenes%2FAraport11_genome_release), there are 27,655 coding genes in the *Arabidopsis* genome.
+
+```{r target ratios}
+targcounts$genomeratio <- targcounts$totaltargets / 27655
+
+write.csv(targcounts, "input/targcounts.txt")
+```
+
+# Find all potential TFs for one gene
+
+One thing we might want to use this data for is to look up all binding TFs for any given gene. This should be fairly simple.
+
+```{r one gene lookup}
+# Put gene ID here
+g <- "AT3G18400" # I started with ANAC058 here
+
+upstream <- as.character(alltarg$TF[which(alltarg$target == g)])
+```
+
+I think at some point I should add a gene description and/or name to the output, but this works for now.
+
+# TF enrichment in a group of genes
+
+This part will be trickier. Overall strategy:
+* Start with a list of target genes, ```e.targ```
+* Create a subset of alltarg with only targets from the list, ```e.subset```
+* Get a list of all unique TFs in the subset, ```e.TF```
+* Count all entries in ```e.subset``` for each TF (similar to above for ```targcounts```), ```e.counts```
+* Calculate ratio for each given TF with the total number of genes in the list (add column to ```e.counts```)
+* Pull the TF counts and ratios from ```targcounts``` for ```e.TF``` (combine with ```e.counts``` to create ```e.results```)
+* Calculate log~2~ fold change of ratio from input to genome (add column to ```e.results```)
+* Calculate binomial test p-value (add column to ```e.results```)
+* *Do p-value adjustment?*
+* Sort results by p-value
+
+```{r TF enrich}
+require(plyr)
+
+e.targ <- c("AT5G19890", "AT3G59900", "AT2G41230", "AT5G40590", "AT2G39980",
+            "AT2G44080", "AT5G53980", "AT4G38410", "AT5G02760", "AT5G20820")
+targnum <- length(e.targ)
+
+e.subset <- alltarg[alltarg$target %in% e.targ,]
+
+e.TF <- as.character(unique(e.subset$TF))
+TFnum <- length(e.TF)
+
+e.counts <- data.frame(matrix(nrow=TFnum, ncol=2))
+colnames(e.counts) <- c("TF", "subtargets")
+
+for (i in 1:TFnum)
+{
+  e.counts$TF[i] <- e.TF[i]
+  
+  e.counts$subtargets[i] <- nrow(e.subset[which(e.subset$TF == e.TF[i]),])
+}
+
+e.counts$subratio <- e.counts$subtargets / targnum
+
+e.totcounts <- targcounts[which(targcounts$TF %in% e.TF),]
+
+e.results <- join_all(list(e.counts, e.totcounts), by = "TF")
+
+e.results$logFC <- log2(e.results$subratio / e.results$genomeratio)
+
+e.results$pval <- NA
+
+for(i in 1:TFnum)
+{
+e.results$pval[i] <- binom.test(e.results$subtargets[i], targnum, e.results$genomeratio[i],
+                                alternative = "two.sided")$p.value
+}
+
+e.results$pval <- as.numeric(e.results$pval)
+
+e.results <- e.results[order(e.results$pval),]
+```
+
+2019-08-06
+
+Previously built basic app to find all potential TFs for one gene (using code above).
+
+Need to add a validation step that checks input for proper AT number.
+
+```{r}
+# Put dummy data here
+gene <- "sldkjf"
+
+loc <- regexpr("AT[1-5]G[0-9][0-9][0-9][0-9]0", toupper(gene))[1]
+
+gene <- substr(gene, loc, loc+8)
+
+```
+
+2019-08-10
+
+Start building multi-gene search app.
+
+Need to take a string of text with AT IDs and extract all unique AT IDs.
+
+```{r}
+# Dummy string
+genes <- "sdfjs;ldkfj"
+
+locs <- gregexpr("AT[1-5]G[0-9][0-9][0-9][0-9]0", genes, ignore.case = TRUE)
+
+genelist <- toupper(regmatches(genes, locs)[[1]])
+```
+
+This works really well with fairly short code.
+
+2019-08-12
+
+Want to rewrite the enrichment search code to remove the need for plyr's ```join_all``` function.
+
+Also, inputting just 10 targets means that all TFs are represented in the "subset" of relationships. So, in this version, I won't worry about matching the TFs when pulling the total counts data; I'll just pull all of them by default. Since the final output ranks them by the enrichment score, this should be fine.
+
+```{r TF enrich 2}
+genelist <- c("AT5G19890", "AT3G59900", "AT2G41230", "AT5G40590", "AT2G39980",
+            "AT2G44080", "AT5G53980", "AT4G38410", "AT5G02760", "AT5G20820")
+
+targnum <- length(genelist)
+
+subtarg <- alltarg[which(alltarg$target %in% genelist),]
+
+targcounts <- read.csv("input/targcounts.txt", header = TRUE, row.names = 1)
+targcounts$subtargets <- NA
+
+for (i in 1:nrow(targcounts))
+{
+  targcounts$subtargets[i] <- nrow(subtarg[which(subtarg$TF == targcounts$TF[i]),])
+}
+
+targcounts$subratio <- targcounts$subtargets / targnum
+
+targcounts$logFC <- log2(targcounts$subratio / targcounts$genomeratio)
+
+targcounts$pval <- NA
+
+for(i in 1:nrow(targcounts))
+{
+  targcounts$pval[i] <- as.numeric(binom.test(targcounts$subtargets[i], targnum, targcounts$genomeratio[i],
+                                              alternative = "two.sided")$p.value)
+}
+
+results <- targcounts[which(targcounts$logFC >= 0),]
+results <- results[order(results$pval),]
+```
+
+2019-08-13
+
+The code from 8-10 worked well in the console, but not in the app itself, where it checks for ```locs != -1``` to make sure there is a valid AT ID. I need to figure something else out.
+
+```{r}
+# Dummy string
+genes <- "sdfjs;ldkfj"
+
+locs <- gregexpr("AT[1-5]G[0-9][0-9][0-9][0-9]0", genes, ignore.case = TRUE)
+
+#Feed this into validation step:
+as.vector(locs[[1]]) != -1
+```
