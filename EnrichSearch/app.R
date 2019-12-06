@@ -10,11 +10,10 @@ ui <- fluidPage(
                                placeholder = "Separators (commas, etc.) are not important. All valid AT IDs will be recognized, and other text will be ignored."),
                  actionButton("submit", "Submit")
     ),
-    mainPanel(h3("Input Genes"),
-              htmlOutput("summary"),
-              h3("Results"),
-              downloadButton("download"),
-              tableOutput("results")
+    mainPanel(h3("Results"),
+              uiOutput("downloadrender"),
+              tableOutput("results"),
+              htmlOutput("summary")
               
     )
   )
@@ -29,6 +28,8 @@ server <- function(input, output) {
   targcounts <- read.csv("input/targcounts.txt",
                          header = TRUE,
                          row.names = 1)
+  
+  colnames(targcounts) <- c("TF ID", "All targets", "Background ratio")
   
   locs <- eventReactive(input$submit, {
     gregexpr("AT[1-5]G[0-9][0-9][0-9][0-9]0", input$genes, ignore.case = TRUE)
@@ -49,36 +50,35 @@ server <- function(input, output) {
     str1 <- paste(sort(genelist()), sep = " ", collapse = " ")
     str2 <- paste("Number of genes:", targnum())
     
-    HTML(paste(str1, str2, sep = "<br/>"))
+    HTML(paste(paste("<h3>Input Genes</h3>", str1, sep = ""), str2, sep = "<br/>"))
   })
   
   results <- reactive({
-    targcounts$subtargets <- NA
+    targcounts$"Query targets" <- NA
     
     subtarg <- subtarg()
     
     for (i in 1:nrow(targcounts))
     {
-      targcounts$subtargets[i] <- nrow(subtarg[which(subtarg$TF == targcounts$TF[i]),])
+      targcounts$"Query targets"[i] <- nrow(subtarg[which(subtarg$TF == targcounts$"TF ID"[i]),])
     }
     
-    targcounts$subratio <- targcounts$subtargets / targnum()
+    targcounts$"Query ratio" <- targcounts$"Query targets" / targnum()
     
-    targcounts$logFC <- log2(targcounts$subratio / targcounts$genomeratio)
+    targcounts$logFC <- log2(targcounts$"Query ratio" / targcounts$"Background ratio")
     
-    targcounts$pval <- NA
+    targcounts$"Adj P value" <- NA
     
     for(i in 1:nrow(targcounts))
     {
-      targcounts$pval[i] <- as.numeric(binom.test(targcounts$subtargets[i], targnum(), targcounts$genomeratio[i],
+      targcounts$"Adj P value"[i] <- as.numeric(binom.test(targcounts$"Query targets"[i], targnum(), targcounts$"Background ratio"[i],
                                                   alternative = "two.sided")$p.value)
     }
     
     #results <- targcounts[which(targcounts$logFC >= 0),]
     results <- targcounts
     
-    results <- results[order(results$pval, results$logFC),]
-    
+    results <- results[order(results$"Adj P value", results$logFC),]
   })
   
   output$results <- renderTable({  
@@ -89,15 +89,19 @@ server <- function(input, output) {
   align = "l",
   digits = 3)
   
-  output$download <- downloadHandler(
+  output$downloadinfo <- downloadHandler(
     filename = function() {
-      paste("ReverseSearchOutput-", Sys.time(), ".csv", sep = "")
+      paste("TFDEACoN_Output_", Sys.time(), ".csv", sep = "")
     },
     
     content = function(file) {
       write.csv(results(), file, row.names = FALSE)
-    }
-  )
+    })
+  
+  output$downloadrender <- renderUI({
+    req(input$submit)
+    downloadButton("downloadinfo")
+  })
 }
 
 

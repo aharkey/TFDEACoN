@@ -1,4 +1,4 @@
-"","TF","totaltargets","genomeratio"
+"","TF ID","Background targets","Background ratio"
 "1","AT5G65510",2679,0.0968721750135599
 "2","AT5G15830",6440,0.232869282227445
 "3","AT5G52830",13734,0.49661905622853
