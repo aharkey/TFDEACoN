@@ -12,12 +12,11 @@ ui <- fluidPage(
     ),
     mainPanel(h3("Results"),
               uiOutput("downloadrender"),
-              tableOutput("results"),
+              DT::dataTableOutput("results"),
               htmlOutput("summary")
-              
+              )
     )
   )
-)
 
 
 server <- function(input, output) {
@@ -72,22 +71,30 @@ server <- function(input, output) {
     for(i in 1:nrow(targcounts))
     {
       targcounts$"Adj P value"[i] <- as.numeric(binom.test(targcounts$"Query targets"[i], targnum(), targcounts$"Background ratio"[i],
-                                                  alternative = "two.sided")$p.value)
+                                                           alternative = "two.sided")$p.value)
     }
     
     #results <- targcounts[which(targcounts$logFC >= 0),]
     results <- targcounts
     
     results <- results[order(results$"Adj P value", results$logFC),]
+    
+    # results$"Background ratio" <- round(results$"Background ratio", digits = 3)
+    # 
+    # results <- results
   })
   
-  output$results <- renderTable({  
-    print(results())
-  },
-  bordered = TRUE,
-  width = "90%",
-  align = "l",
-  digits = 3)
+  resultsdisplay <- reactive({
+    resultsdisplay <- results()
+    
+    resultsdisplay[,c(3,5:7)] <- round(resultsdisplay[,c(3,5:7)], digits = 2)
+    
+    resultsdisplay <- resultsdisplay
+  })
+  
+  output$results <- DT::renderDataTable({  
+    DT::datatable(resultsdisplay(), rownames = FALSE)
+  })
   
   output$downloadinfo <- downloadHandler(
     filename = function() {
