@@ -11,8 +11,8 @@ ui <- fluidPage(
                  actionButton("submit", "Submit")
     ),
     mainPanel(h3("Results"),
-              uiOutput("downloadrender"),
               DT::dataTableOutput("results"),
+              uiOutput("downloadrender"),
               htmlOutput("summary")
               )
     )
