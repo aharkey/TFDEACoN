@@ -24,11 +24,11 @@ server <- function(input, output) {
                       header = TRUE,
                       row.names = 1)
   
-  targcounts <- read.csv("input/targcounts.txt",
+  targcounts <- read.delim("input/targcounts.txt",
                          header = TRUE,
                          row.names = 1)
   
-  colnames(targcounts) <- c("TF ID", "All targets", "Background ratio")
+  colnames(targcounts) <- c("TF ID", "Family", "Gene name(s)", "All targets", "Background ratio")
   
   locs <- eventReactive(input$submit, {
     gregexpr("AT[1-5]G[0-9][0-9][0-9][0-9]0", input$genes, ignore.case = TRUE)
@@ -74,20 +74,15 @@ server <- function(input, output) {
                                                            alternative = "two.sided")$p.value)
     }
     
-    #results <- targcounts[which(targcounts$logFC >= 0),]
     results <- targcounts
     
     results <- results[order(results$"Adj P value", results$logFC),]
-    
-    # results$"Background ratio" <- round(results$"Background ratio", digits = 3)
-    # 
-    # results <- results
   })
   
   resultsdisplay <- reactive({
     resultsdisplay <- results()
     
-    resultsdisplay[,c(3,5:7)] <- round(resultsdisplay[,c(3,5:7)], digits = 2)
+    resultsdisplay[,c(5,7:9)] <- round(resultsdisplay[,c(5,7:9)], digits = 2)
     
     resultsdisplay <- resultsdisplay
   })
