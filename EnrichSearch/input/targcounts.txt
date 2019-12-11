@@ -1,4 +1,4 @@
-	tf.id	family	gene.name	back.targ	back.ratio
+	tf.id	family	gene.name	genome.count	genome.ratio
 1	AT5G65510	AP2-EREBP	AIL7	2679	0.096872175
 2	AT5G15830	bZIP	bZIP3	6440	0.232869282
 3	AT5G52830	WRKY	WRKY27	13734	0.496619056
