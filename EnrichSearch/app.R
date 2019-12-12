@@ -1,7 +1,9 @@
 library(shiny)
 
 ui <- fluidPage(
-  titlePanel("TF DEACoN"),
+  titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100),
+                         "TF DEACoN")
+             ),
   
   sidebarLayout(
     sidebarPanel(h3("Input Genes"),
@@ -41,7 +43,7 @@ server <- function(input, output) {
     str1 <- paste(sort(querylist()), sep = " ", collapse = " ")
     str2 <- paste("Number of genes:", querylen())
     
-    HTML(paste(paste("<h3>Input Genes</h3>", str1, sep = ""), str2, sep = "<br/>"))
+    HTML(paste(paste("<h3>Input Genes</h3>", str2, sep = ""), str1, sep = "<br/>"))
   })
 # Read data needed:
   # alltarg = all TF to target relationships, pairwise
@@ -86,6 +88,8 @@ server <- function(input, output) {
       results$adj.pval[i] <- as.numeric(binom.test(results$query.count[i], querylen(), results$genome.ratio[i],
                                                            alternative = "two.sided")$p.value)
       }
+    
+    results$adj.pval <- p.adjust(results$adj.pval, method = "BH")
     
     # Arrange results from smallest to largest p-value
     results <- results[order(results$adj.pval, results$logFC),]
