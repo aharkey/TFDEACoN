@@ -1,0 +1,10 @@
+---
+title: "citations"
+output: html_document
+---
+
+### How to cite TF DEACoN
+When you use results from TF DEACoN in a publication please cite our publication:
+
+### References
+The following 
