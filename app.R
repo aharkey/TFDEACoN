@@ -2,7 +2,8 @@ library(shiny)
 
 ui <- fluidPage(
   titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100),
-                         "TF DEACoN")
+                         "TF DEACoN"),
+             windowTitle = "TF DEACoN"
              ),
   br(),
   
