@@ -15,7 +15,7 @@ For example, if TF A has 2,000 target genes out of a genome of 27,655 genes (bas
 To use TF DEACoN, you only need a list of the AT IDs (ATxGxxxxx) for your query set. You can paste the list into the Input Genes box on the left, then hit submit.
 
 ### Does it matter what format my gene IDs are in?
-As long as your gene IDs follow the ATxGxxxxx format, they should be recognized by TF DEACoN. It does not matter what is in between the IDs (spaces, commas, etc.) or if they are on separate lines.
+As long as your gene IDs follow the ATxGxxxxx format, they should be recognized by TF DEACoN. The algorithm is not case sensitive, and it does not matter what is in between the IDs (spaces, commas, etc.) or if they are on separate lines.
 
 The Query tab shows the total number and IDs of input genes which were recognized by TF DEACoN and used in the analysis. You can use this information to confirm that all the genes from your query were recognized.
 
