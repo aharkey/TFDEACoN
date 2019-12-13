@@ -17,7 +17,7 @@ To use TF DEACoN, you only need a list of the AT IDs (ATxGxxxxx) for your query 
 ### Does it matter what format my gene IDs are in?
 As long as your gene IDs follow the ATxGxxxxx format, they should be recognized by TF DEACoN. It does not matter what is in between the IDs (spaces, commas, etc.) or if they are on separate lines.
 
-The total number and IDs of input genes which were recognized by TF DEACoN and used in the analysis are shown. You can use this information to confirm that all the genes from your query were recognized.
+The Query tab shows the total number and IDs of input genes which were recognized by TF DEACoN and used in the analysis. You can use this information to confirm that all the genes from your query were recognized.
 
 ### What does the output (“Results”) mean?
 Results are given as a table, with each row representing one transcription factor. The columns are as follows:
