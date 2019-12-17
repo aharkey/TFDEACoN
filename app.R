@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyBS)
 
 ui <- fluidPage(
   titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100),
@@ -11,15 +12,22 @@ ui <- fluidPage(
               tabPanel("Home",
                        br(),
                        sidebarLayout(
-                         sidebarPanel(h3("Input Genes"),
-                                      textAreaInput("query", label = "Gene IDs (AT IDs)",
+                         sidebarPanel(h3("Input query"),
+                                      textAreaInput("query", label = "Gene IDs (AGI locus IDs)",
                                                     width = "100%", rows = 5, resize = "vertical",
-                                                    placeholder = "Separators (commas, etc.) are not important. All valid AT IDs will be recognized, and other text will be ignored."),
+                                                    placeholder = "e.g. AT1G58410 AT5G11100 AT5G20640 AT5G20830 AT1G77380 AT5G63850 AT5G59090"),
+                                      bsTooltip("query",
+                                                "Separators (commas, etc.) are not important. All valid AT IDs will be recognized, and other text will be ignored."),
+                                      h4("Output options"),
                                       checkboxInput("logFCfilt",
                                                     "Apply logFC filter"),
+                                      bsTooltip("logFCfilt",
+                                                "Applies a minimum logFC threshold. Positive logFC values represent a relative enrichment of TF targets over background."),
                                       uiOutput("logFCmenu"),
                                       checkboxInput("pvalfilt",
                                                     "Apply p-value filter"),
+                                      bsTooltip("pvalfilt",
+                                                "Applies a maximum p-value threshold."),
                                       uiOutput("pvalmenu"),
                                       actionButton("submit", "Submit")
                          ),
@@ -60,11 +68,10 @@ server <- function(input, output) {
     }
     
     if(input$logFCfilt == 1) {
-      sliderInput("logFCvalue",
+      selectInput("logFCvalue",
                   "logFC cutoff:",
-                  min = 0,
-                  max = 3,
-                  value = 0)
+                  list(0, 1, 2, 3),
+                  width = "50%")
     }
   })
   
@@ -76,7 +83,8 @@ server <- function(input, output) {
     if(input$pvalfilt == 1) {
       selectInput("pvalvalue",
                   "p-value cutoff:",
-                  list(0.05, 0.001))
+                  list(0.05, 0.001),
+                  width = "50%")
     }
   })
   
