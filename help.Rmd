@@ -31,21 +31,21 @@ Any filters you choose will apply to the downloaded data file as well.
 
 ### What does the output (“Results”) mean?
 Results are given as a table, with each row representing one transcription factor. The columns are as follows:
-**TF ID** - the TAIR AT ID for the TF
-**Family & Gene name(s)** - where it is available, the TF family and gene name(s) are provided to aid in quick identification of interesting transcription factors. However, we recommend that you use TAIR to confirm the information for any TFs of interest.
-**Genome count** - Number of targets this TF has in the entire genome
-**Genome ratio** - Ratio of TF targets to the whole genome
-**Query count** - Number of TF targets in the query
-**Query ratio** - Ratio of query TF targets to the total number of genes in the query
-**logFC** - The log2 fold change of the query ratio compared to the genome ratio - a positive value indicates that the query ratio is higher than the genome ratio
-**Adjusted p-value** - p-value calculated by binomial test and corrected using BH
+- **TF ID** - the TAIR AT ID for the TF
+- **Family & Gene name(s)** - where it is available, the TF family and gene name(s) are provided to aid in quick identification of interesting transcription factors. However, we recommend that you use TAIR to confirm the information for any TFs of interest.
+- **Genome count** - Number of targets this TF has in the entire genome
+- **Genome ratio** - Ratio of TF targets to the whole genome
+- **Query count** - Number of TF targets in the query
+- **Query ratio** - Ratio of query TF targets to the total number of genes in the query
+- **logFC** - The log2 fold change of the query ratio compared to the genome ratio - a positive value indicates that the query ratio is higher than the genome ratio
+- **Adjusted p-value** - p-value calculated by binomial test and corrected using BH
 
 By default, these results are sorted by p-value (smallest to largest). However, you can click on any column heading to sort by this column. You can also search for a gene family, gene name, or gene ID in the Search box in the top right corner.
 
 The full results can be downloaded using the Download button underneath the results table.
 
 ### General notes for using TF DEACoN
-* TF DEACoN works best with larger groups of genes. For groups that have extreme enrichment of a TF, a group as small as 20 genes may reveal significant enrichment, but groups closer to 100 genes tend to give better results
-* Currently, TF DEACoN is only based on DAP-Seq data from [link]. We recommend that you look at the plant growth conditions under which those experiments were performed, and keep this in mind when drawing conclusions about TF targets.
-* DAP-Seq data is only available for 387 Arabidopsis TFs. TF DEACoN therefore cannot make predictions about TFs which are not in this dataset.
+- TF DEACoN works best with larger groups of genes. For groups that have extreme enrichment of a TF, a group as small as 20 genes may reveal significant enrichment, but groups closer to 100 genes tend to give better results
+- Currently, TF DEACoN is only based on DAP-Seq data from [link]. We recommend that you look at the plant growth conditions under which those experiments were performed, and keep this in mind when drawing conclusions about TF targets.
+- DAP-Seq data is only available for 387 Arabidopsis TFs. TF DEACoN therefore cannot make predictions about TFs which are not in this dataset.
 
