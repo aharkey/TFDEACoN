@@ -5,6 +5,6 @@ account: aharkey
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1596701
-bundleId: 2665112
+bundleId: 2678673
 url: https://aharkey.shinyapps.io/tfdeacon/
-when: 1576246169.30246
+when: 1576686124.68412

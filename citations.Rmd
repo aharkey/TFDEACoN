@@ -3,8 +3,24 @@ title: "citations"
 output: html_document
 ---
 
-### How to cite TF DEACoN
-When you use results from TF DEACoN in a publication please cite our publication:
+## References
 
-### References
-The following 
+### Data
+TF DEACoN's analysis uses data from:
+
+* O’Malley, Ronan C. et al. Cistrome and Epicistrome Features Shape the Regulatory DNA Landscape. Cell, Volume 165, Issue 5, 1280 - 1292
+
+This data can be accessed at http://neomorph.salk.edu/dap_web/pages/index.php.
+
+### Development
+TF DEACoN was developed using R Shiny:
+
+* R Core Team (2019). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+* Winston Chang, Joe Cheng, JJ Allaire, Yihui Xie and Jonathan McPherson (2019). shiny: Web Application Framework for R. R package version 1.4.0. https://CRAN.R-project.org/package=shiny
+
+And the following R packages:
+
+* Eric Bailey (2015). shinyBS: Twitter Bootstrap Components for Shiny. R package version 0.61. https://CRAN.R-project.org/package=shinyBS
+
+* Yihui Xie, Joe Cheng and Xianying Tan (2019). DT: A Wrapper of the JavaScript Library 'DataTables'. R package version 0.10. https://CRAN.R-project.org/package=DT
