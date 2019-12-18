@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyBS)
 
 ui <- fluidPage(
   titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100),
@@ -14,12 +15,18 @@ ui <- fluidPage(
                          sidebarPanel(h3("Input Genes"),
                                       textAreaInput("query", label = "Gene IDs (AT IDs)",
                                                     width = "100%", rows = 5, resize = "vertical",
-                                                    placeholder = "Separators (commas, etc.) are not important. All valid AT IDs will be recognized, and other text will be ignored."),
+                                                    placeholder = "e.g. AT5G11100, AT5G20640, AT5G20830, AT1G77380, AT5G63850, AT5G59090"),
+                                      bsTooltip("query",
+                                                "Separators (commas, etc.) are not important. All valid AT IDs will be recognized, and other text will be ignored."),
                                       checkboxInput("logFCfilt",
                                                     "Apply logFC filter"),
+                                      bsTooltip("logFCfilt",
+                                                "Set a minimum logFC cutoff. logFC is a measure of TF target enrichment See Help for more info."),
                                       uiOutput("logFCmenu"),
                                       checkboxInput("pvalfilt",
                                                     "Apply p-value filter"),
+                                      bsTooltip("pvalfilt",
+                                                "Set a maximum p-value cutoff"),
                                       uiOutput("pvalmenu"),
                                       actionButton("submit", "Submit")
                          ),
