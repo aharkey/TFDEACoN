@@ -44,9 +44,7 @@ ui <- fluidPage(
                        )),
               
               tabPanel("Help",
-                       includeMarkdown("help.Rmd")),
-              tabPanel("Citations",
-                       includeMarkdown("citations.Rmd"))
+                       includeMarkdown("help.Rmd"))
   )
 )
 

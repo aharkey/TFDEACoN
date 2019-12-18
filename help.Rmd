@@ -19,16 +19,6 @@ As long as your gene IDs follow the ATxGxxxxx format, they should be recognized 
 
 The Query tab shows the total number and IDs of input genes which were recognized by TF DEACoN and used in the analysis. You can use this information to confirm that all the genes from your query were recognized.
 
-### What do the logFC and p-value filters do?
-These filters allow you to narrow down which results are displayed in the output. It does not change how the results are calculated.
-
-- The logFC filter sets a minimum value for the logFC. TFs which show enrichment of targets in the query will have a positive logFC. A logFC of 1 represents a 2-fold enrichment; a logFC of 2 represents a 4-fold enrichment.
-- The p-value filter sets a maximum value for the p-value.
-
-You can set these two filters separately, but an interesting result would have both a positive logFC and a small p-value.
-
-Any filters you choose will apply to the downloaded data file as well.
-
 ### What does the output (“Results”) mean?
 Results are given as a table, with each row representing one transcription factor. The columns are as follows:
 **TF ID** - the TAIR AT ID for the TF
