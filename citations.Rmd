@@ -8,9 +8,7 @@ output: html_document
 ### Data
 TF DEACoN's analysis uses data from:
 
->O’Malley, Ronan C. et al.
->Cistrome and Epicistrome Features Shape the Regulatory DNA Landscape.
->Cell, Volume 165, Issue 5, 1280 - 1292
+* O’Malley, Ronan C. et al. Cistrome and Epicistrome Features Shape the Regulatory DNA Landscape. Cell, Volume 165, Issue 5, 1280 - 1292
 
 This data can be accessed at http://neomorph.salk.edu/dap_web/pages/index.php.
 
