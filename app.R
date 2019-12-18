@@ -53,14 +53,12 @@ ui <- fluidPage(
 # Read data needed:
 # alltarg = all TF to target relationships, pairwise
 alltarg <- read.csv("input/alltarg.txt",
-                    header = TRUE,
-                    row.names = 1)
+                    header = TRUE)
 
 # targcounts = genome target counts for all TFs
 #   becomes basis of results dataframe
-targcounts <- read.delim("input/targcounts.txt",
-                         header = TRUE,
-                         row.names = 1)
+targcounts <- read.csv("input/targcounts.txt",
+                         header = TRUE)
 
 server <- function(input, output) {
   output$logFCmenu <- renderUI({
