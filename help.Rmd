@@ -2,24 +2,33 @@
 title: "Help"
 output: html_document
 ---
+### Help
 
-### What is TF DEACoN?
+#### What is TF DEACoN?
 TF DEACoN stands for Transcription Factor Discovery by Enrichment Analysis of Co-expression Networks. It is a tool for generating hypotheses about which transcription factors (TFs) may be important for observed transcriptional responses. Given a set of genes which are linked transcriptionally (e.g. because they were observed to respond to the same stimulus or across a developmental time-frame, etc.), TF DEACoN will report back which TFs show target enrichment in this set.
 
-### How does target enrichment work?
+***
+
+#### How does target enrichment work?
 Target enrichment is based on DAP-Seq data from the Ecker lab. Each TF in the database has a list of target genes from DAP-Seq experiments. A background or genome ratio is calculated for each TF based on the total number of targets in the genome. For a given subset of genes (a query), the query ratio is calculated from the number of targets in the query and the total number of genes in the query.
 
 For example, if TF A has 2,000 target genes out of a genome of 27,655 genes (based on Araport 11), then its background ratio is 0.072. Given a query of 50 genes, of which 20 are targets of TF A, then the query ratio is 0.4. This is significantly larger than the background ratio, and we would likely say that this TF’s targets are enriched in the query. A binomial test is used to compare the two ratios and give a p-value.
 
-### How do I use TF DEACoN?
+***
+
+#### How do I use TF DEACoN?
 To use TF DEACoN, you only need a list of the AT IDs (ATxGxxxxx) for your query set. You can paste the list into the Input Genes box on the left, then hit submit.
 
-### Does it matter what format my gene IDs are in?
+***
+
+#### Does it matter what format my gene IDs are in?
 As long as your gene IDs follow the ATxGxxxxx format, they should be recognized by TF DEACoN. The algorithm is not case sensitive, and it does not matter what is in between the IDs (spaces, commas, etc.) or if they are on separate lines.
 
 The Query tab shows the total number and IDs of input genes which were recognized by TF DEACoN and used in the analysis. You can use this information to confirm that all the genes from your query were recognized.
 
-### What do the logFC and p-value filters do?
+***
+
+#### What do the logFC and p-value filters do?
 These filters allow you to narrow down which results are displayed in the output. It does not change how the results are calculated.
 
 - The logFC filter sets a minimum value for the logFC. TFs which show enrichment of targets in the query will have a positive logFC. A logFC of 1 represents a 2-fold enrichment; a logFC of 2 represents a 4-fold enrichment.
@@ -29,7 +38,9 @@ You can set these two filters separately, but an interesting result would have b
 
 Any filters you choose will apply to the downloaded data file as well.
 
-### What does the output (“Results”) mean?
+***
+
+#### What does the output (“Results”) mean?
 Results are given as a table, with each row representing one transcription factor. The columns are as follows:
 - **TF ID** - the TAIR AT ID for the TF
 - **Family & Gene name(s)** - where it is available, the TF family and gene name(s) are provided to aid in quick identification of interesting transcription factors. However, we recommend that you use TAIR to confirm the information for any TFs of interest.
@@ -44,7 +55,9 @@ By default, these results are sorted by p-value (smallest to largest). However, 
 
 The full results can be downloaded using the Download button underneath the results table.
 
-### General notes for using TF DEACoN
+***
+
+#### General notes for using TF DEACoN
 - TF DEACoN works best with larger groups of genes. For groups that have extreme enrichment of a TF, a group as small as 20 genes may reveal significant enrichment, but groups closer to 100 genes tend to give better results
 - Currently, TF DEACoN is only based on DAP-Seq data from [link]. We recommend that you look at the plant growth conditions under which those experiments were performed, and keep this in mind when drawing conclusions about TF targets.
 - DAP-Seq data is only available for 387 Arabidopsis TFs. TF DEACoN therefore cannot make predictions about TFs which are not in this dataset.

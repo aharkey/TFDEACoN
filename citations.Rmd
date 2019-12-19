@@ -3,16 +3,16 @@ title: "citations"
 output: html_document
 ---
 
-## References
+### References
 
-### Data
+#### Data
 TF DEACoN's analysis uses data from:
 
 * O’Malley, Ronan C. et al. Cistrome and Epicistrome Features Shape the Regulatory DNA Landscape. Cell, Volume 165, Issue 5, 1280 - 1292
 
 This data can be accessed at http://neomorph.salk.edu/dap_web/pages/index.php.
 
-### Development
+#### Development
 TF DEACoN was developed using R Shiny:
 
 * R Core Team (2019). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
