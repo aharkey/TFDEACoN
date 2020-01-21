@@ -248,3 +248,13 @@ locs <- gregexpr("AT[1-5]G[0-9][0-9][0-9][0-9]0", genes, ignore.case = TRUE)
 #Feed this into validation step:
 as.vector(locs[[1]]) != -1
 ```
+
+2020-01-16
+
+I need to add a Fisher's exact test to the app.
+
+```{r}
+ftest <- rbind(c(20000, 1000), c(2, 50))
+
+fisher.test(ftest)$p.value
+```

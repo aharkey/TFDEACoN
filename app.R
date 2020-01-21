@@ -134,27 +134,55 @@ server <- function(input, output) {
     results$logFC <- log2(results$query.ratio / results$genome.ratio)
     
     # Calculate the adjusted p-value
-    results$adj.pval <- NA
+    results$binom <- NA
     
     for(i in 1:nrow(results))
     {
-      results$adj.pval[i] <- as.numeric(binom.test(results$query.count[i], querylen(), results$genome.ratio[i],
+      results$binom[i] <- as.numeric(binom.test(results$query.count[i], querylen(), results$genome.ratio[i],
                                                    alternative = "two.sided")$p.value)
     }
     
-    results$adj.pval <- p.adjust(results$adj.pval, method = "BH")
+    results$adj.binom <- p.adjust(results$binom, method = "BH")
     
     if(input$logFCfilt == TRUE){
       results <- results[which(results$logFC >= input$logFCvalue),]
     }
     
     if(input$pvalfilt == TRUE){
-      results <- results[which(results$adj.pval <= input$pvalvalue),]
+      results <- results[which(results$adj.binom <= input$pvalvalue),]
     }
+    
+    # Calculate Fisher's exact test
+    
+    G <- 27655
+    
+    results$fisher <- NA
+    
+    for(i in 1:nrow(results))
+    {
+      Q <- querylen()
+      Ta <- results$genome.count[i]
+      Qta <- results$query.count[i]
+      
+      A <- G - (Ta + Q - Qta)
+      B <- Ta - Qta
+      C <- Q - Qta
+      D <- Qta
+      
+      results$fisher[i] <- as.numeric(
+        fisher.test(
+          rbind(
+            c(A, B),
+            c(C, D)
+          )
+        )$p.value)
+    }
+    
+    results$adj.fisher <- p.adjust(results$fisher, method = "BH")
     
     
     # Arrange results from smallest to largest p-value
-    results <- results[order(results$adj.pval, results$logFC),]
+    results <- results[order(results$adj.binom),]
   })
   
   # Create version of results for displaying on screen
@@ -162,11 +190,11 @@ server <- function(input, output) {
     resultsdisplay <- results()
     
     # Round numeric results for display
-    resultsdisplay[,c(5,7:9)] <- round(resultsdisplay[,c(5,7:9)], digits = 2)
+    resultsdisplay[,c(5,7:12)] <- round(resultsdisplay[,c(5,7:12)], digits = 2)
     
     # Add better-looking column names
     DT::datatable(resultsdisplay, rownames = FALSE,
-                  colnames = c("TF ID", "TF family", "Gene name(s)", "Genome target count", "Genome ratio", "Query target count", "Query ratio", "logFC", "Adj p-value")
+                  colnames = c("TF ID", "TF family", "Gene name(s)", "Genome target count", "Genome ratio", "Query target count", "Query ratio", "logFC", "Binomial", "Adj Binom", "Fisher", "Adj Fisher")
     )
   })
   
