@@ -24,3 +24,12 @@ And the following R packages:
 * Eric Bailey (2015). shinyBS: Twitter Bootstrap Components for Shiny. R package version 0.61. https://CRAN.R-project.org/package=shinyBS
 
 * Yihui Xie, Joe Cheng and Xianying Tan (2019). DT: A Wrapper of the JavaScript Library 'DataTables'. R package version 0.10. https://CRAN.R-project.org/package=DT
+
+#### Logo
+The TF DEACoN logo was created using the following works, from [the Noun Project](https://thenounproject.com/):
+
+* ["DNA"](https://thenounproject.com/icon/2922443/) icon by Alena, RU
+
+* ["Top Hat"](https://thenounproject.com/icon/414702/) icon by parkjisun
+
+* ["Bow Tie"](https://thenounproject.com/icon/1247081/) icon by Kangrif, ID

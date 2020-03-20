@@ -18,23 +18,24 @@ ui <- fluidPage(
                                                     placeholder = "e.g. AT5G11100, AT5G20640, AT5G20830, AT1G77380, AT5G63850, AT5G59090"),
                                       bsTooltip("query",
                                                 "Separators (commas, etc.) are not important. All valid AT IDs will be recognized, and other text will be ignored."),
-                                      checkboxInput("logFCfilt",
-                                                    "Apply logFC filter"),
-                                      bsTooltip("logFCfilt",
-                                                "Set a minimum logFC cutoff. logFC is a measure of TF target enrichment See Help for more info."),
-                                      uiOutput("logFCmenu"),
                                       checkboxInput("pvalfilt",
                                                     "Apply p-value filter"),
                                       bsTooltip("pvalfilt",
                                                 "Set a maximum p-value cutoff"),
                                       uiOutput("pvalmenu"),
+                                      checkboxInput("logFCfilt",
+                                                    "Apply logFC filter"),
+                                      bsTooltip("logFCfilt",
+                                                "Set a minimum logFC cutoff. logFC is a measure of TF target enrichment See Help for more info."),
+                                      uiOutput("logFCmenu"),
                                       actionButton("submit", "Submit")
                          ),
                          mainPanel(
                            tabsetPanel(type = "tabs",
                                        tabPanel("Results",
                                                 DT::dataTableOutput("resultsdisplay"),
-                                                uiOutput("downloadrender")),
+                                                uiOutput("downloadrender"),
+                                                br()),
                                        tabPanel("Query",
                                                 h3("TF DEACoN recognized the following query"),
                                                 htmlOutput("confirmquery")
@@ -133,17 +134,6 @@ server <- function(input, output) {
     
     results$logFC <- log2(results$query.ratio / results$genome.ratio)
     
-    # Calculate the adjusted p-value
-    results$binom <- NA
-    
-    for(i in 1:nrow(results))
-    {
-      results$binom[i] <- as.numeric(binom.test(results$query.count[i], querylen(), results$genome.ratio[i],
-                                                   alternative = "two.sided")$p.value)
-    }
-    
-    results$adj.binom <- p.adjust(results$binom, method = "BH")
-    
     if(input$logFCfilt == TRUE){
       results <- results[which(results$logFC >= input$logFCvalue),]
     }
@@ -182,7 +172,7 @@ server <- function(input, output) {
     
     
     # Arrange results from smallest to largest p-value
-    results <- results[order(results$adj.binom),]
+    results <- results[order(results$adj.fisher),]
   })
   
   # Create version of results for displaying on screen
@@ -190,11 +180,11 @@ server <- function(input, output) {
     resultsdisplay <- results()
     
     # Round numeric results for display
-    resultsdisplay[,c(5,7:12)] <- round(resultsdisplay[,c(5,7:12)], digits = 2)
+    resultsdisplay[,c(5,7:10)] <- round(resultsdisplay[,c(5,7:10)], digits = 2)
     
     # Add better-looking column names
     DT::datatable(resultsdisplay, rownames = FALSE,
-                  colnames = c("TF ID", "TF family", "Gene name(s)", "Genome target count", "Genome ratio", "Query target count", "Query ratio", "logFC", "Binomial", "Adj Binom", "Fisher", "Adj Fisher")
+                  colnames = c("TF ID", "TF family", "Gene name(s)", "Genome target count", "Genome ratio", "Query target count", "Query ratio", "logFC", "p-value", "Adj p-val")
     )
   })
   
