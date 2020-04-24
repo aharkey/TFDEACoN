@@ -84,7 +84,7 @@ server <- function(input, output) {
     if(input$pvalfilt == 1) {
       selectInput("pvalvalue",
                   "p-value cutoff:",
-                  list(0.05, 0.001))
+                  list(0.05, 0.01, 0.001))
     }
   })
   
