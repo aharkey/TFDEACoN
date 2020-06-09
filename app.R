@@ -134,19 +134,10 @@ server <- function(input, output) {
     
     results$logFC <- log2(results$query.ratio / results$genome.ratio)
     
-    if(input$logFCfilt == TRUE){
-      results <- results[which(results$logFC >= input$logFCvalue),]
-    }
-    
-    if(input$pvalfilt == TRUE){
-      results <- results[which(results$adj.binom <= input$pvalvalue),]
-    }
-    
     # Calculate Fisher's exact test
-    
     G <- 27655
     
-    results$fisher <- NA
+    results$pval <- NA
     
     for(i in 1:nrow(results))
     {
@@ -159,7 +150,7 @@ server <- function(input, output) {
       C <- Q - Qta
       D <- Qta
       
-      results$fisher[i] <- as.numeric(
+      results$pval[i] <- as.numeric(
         fisher.test(
           rbind(
             c(A, B),
@@ -168,11 +159,17 @@ server <- function(input, output) {
         )$p.value)
     }
     
-    results$adj.fisher <- p.adjust(results$fisher, method = "BH")
+    results$adj.pval <- p.adjust(results$pval, method = "BH")
     
+    if(input$logFCfilt == TRUE){
+      results <- results[which(results$logFC >= input$logFCvalue),]
+    }
     
+    if(input$pvalfilt == TRUE){
+      results <- results[which(results$adj.pval <= input$pvalvalue),]
+    }
     # Arrange results from smallest to largest p-value
-    results <- results[order(results$adj.fisher),]
+    results <- results[order(results$adj.pval),]
   })
   
   # Create version of results for displaying on screen
