@@ -188,7 +188,7 @@ server <- function(input, output) {
   # Create the download file 
   output$downloadinfo <- downloadHandler(
     filename = function() {
-      paste("TFDEACoN_Output_", Sys.time(), ".csv", sep = "")
+      paste0("TFDEACoN_Output_", Sys.time(), ".csv")
     },
     
     content = function(file) {
