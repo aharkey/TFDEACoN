@@ -33,6 +33,7 @@ ui <- fluidPage(
                          mainPanel(
                            tabsetPanel(type = "tabs",
                                        tabPanel("Results",
+                                                htmlOutput("querywarn"),
                                                 DT::dataTableOutput("resultsdisplay"),
                                                 uiOutput("downloadrender"),
                                                 br()),
@@ -115,6 +116,17 @@ server <- function(input, output) {
   # Perform calculations
   # How many genes are in the query?
   querylen <- reactive({length(querylist())})
+  
+  output$querywarn <- renderUI({
+    if(querylen() <= 100)
+    {
+      HTML("</br><p style='color:blue;'>The query input is 100 genes or less. Note that a small sample size increases the likelihood of false negatives. See the help document for more details.</p></br>")
+    }
+    else
+    {
+      HTML("")
+    }
+  })
   
   # Create a smaller version of alltarg which only contains the relevant entries (with query targets)
   querytarg <- reactive({alltarg[which(alltarg$target %in% querylist()),]})
