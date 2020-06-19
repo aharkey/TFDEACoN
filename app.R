@@ -1,14 +1,18 @@
 library(shiny)
 library(shinyBS)
+library(shinythemes)
 
 ui <- fluidPage(
+  theme = shinytheme("cosmo"),
+  
   titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100),
                          "TF DEACoN"),
              windowTitle = "TF DEACoN"
   ),
   br(),
   
-  tabsetPanel(type = "tabs",
+  navbarPage("",
+    #type = "tabs",
               tabPanel("Home",
                        br(),
                        sidebarLayout(
@@ -38,7 +42,6 @@ ui <- fluidPage(
                                                 uiOutput("downloadrender"),
                                                 br()),
                                        tabPanel("Query",
-                                                h3("TF DEACoN recognized the following query"),
                                                 htmlOutput("confirmquery")
                                        )
                            ))
@@ -107,10 +110,11 @@ server <- function(input, output) {
   # Output the query list
   # This allows the user to double-check that all their gene IDs were recognized
   output$confirmquery <- renderUI({
-    str1 <- paste(sort(querylist()), sep = " ", collapse = " ")
+    str1 <- "<h3>TF DEACoN recognized the following query</h3>"
     str2 <- paste("Number of genes:", querylen())
+    str3 <- paste(sort(querylist()), sep = "</br>", collapse = "</br>")
     
-    HTML(paste(str2, str1, sep = "<br/>"))
+    HTML(paste(str1, str2, str3, sep = "</br>"))
   })
   
   # Perform calculations
