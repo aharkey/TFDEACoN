@@ -1,8 +1,9 @@
 library(shiny)
+library(shinyBS)
 
 ##### UI #####
 ui <- fluidPage(
-  theme = shinytheme("cosmo"),
+  theme = shinythemes::shinytheme("cosmo"),
   
   titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100),
                          "TF DEACoN"),
