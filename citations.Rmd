@@ -9,7 +9,13 @@ If you use TF DEACoN in a publication, please cite:
 
 > Harkey, Alexandria F. et al. (in press) A new tool for discovering transcriptional regulators of co-expressed genes predicts gene regulatory networks that mediate ethylene-controlled root development. *In Silico* Plants.
 
-</br>
+***
+
+### Code
+
+All code for TF DEACoN is available on [GitHub](https://github.com/aharkey/TFDEACoN) under an open source (GPL-3.0) license.
+
+***
 
 ### References
 
