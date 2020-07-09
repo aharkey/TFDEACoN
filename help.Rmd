@@ -15,9 +15,13 @@ To use TF DEACoN, you only need a list of the AT IDs (ATxGxxxxx) for your query 
 ***
 
 #### General notes for using TF DEACoN
-- TF DEACoN works best with larger groups of genes. For groups that have extreme enrichment of a TF, a group as small as 20 genes may reveal significant enrichment, but groups closer to 100 genes tend to give better results
-- Currently, TF DEACoN is only based on DAP-Seq data from [link]. We recommend that you look at the plant growth conditions under which those experiments were performed, and keep this in mind when drawing conclusions about TF targets.
-- DAP-Seq data is only available for 387 Arabidopsis TFs. TF DEACoN therefore cannot make predictions about TFs which are not in this dataset.
+
+* Currently, TF DEACoN is only based on DAP-Seq data from [link](http://neomorph.salk.edu/dap_web/pages/browse_table_aj.php). We recommend that you look at the plant growth conditions under which those experiments were performed, and keep this in mind when drawing conclusions about TF targets.
+* DAP-Seq data is only available for 387 Arabidopsis TFs. TF DEACoN therefore cannot make predictions about TFs which are not in this dataset.
+
+***
+#### A note on sample size
+TF DEACoN works best with larger groups of genes. While the Fisher's exact test used to calculate the p value corrects for small sample sizes, the chance of a false negative (i.e. missing a TF that is really enriched) is higher for smaller sets of genes and for TFs with fewer targets. For groups that have extreme enrichment of a TF, a group as small as 20 genes may reveal significant enrichment, but groups closer to 100 genes tend to give better results.
 
 ***
 
@@ -38,8 +42,8 @@ The Query tab shows the total number and IDs of input genes which were recognize
 #### What do the logFC and p-value filters do?
 These filters allow you to narrow down which results are displayed in the output. It does not change how the results are calculated.
 
-- The logFC filter sets a minimum value for the logFC. TFs which show enrichment of targets in the query will have a positive logFC. A logFC of 1 represents a 2-fold enrichment; a logFC of 2 represents a 4-fold enrichment.
 - The p-value filter sets a maximum value for the p-value.
+- The logFC filter sets a minimum value for the logFC. TFs which show enrichment of targets in the query will have a positive logFC. A logFC of 1 represents a 2-fold enrichment; a logFC of 2 represents a 4-fold enrichment.
 
 You can set these two filters separately, but an interesting result would have both a positive logFC and a small p-value.
 

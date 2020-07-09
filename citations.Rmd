@@ -1,7 +1,15 @@
 ---
-title: "citations"
+title: "Citations"
 output: html_document
 ---
+
+### Cite TF DEACoN
+
+If you use TF DEACoN in a publication, please cite:
+
+> Harkey, Alexandria F. et al. (in press) A new tool for discovering transcriptional regulators of co-expressed genes predicts gene regulatory networks that mediate ethylene-controlled root development. *In Silico* Plants.
+
+</br>
 
 ### References
 
