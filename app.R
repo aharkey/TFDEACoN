@@ -5,7 +5,11 @@ library(shinyBS)
 ui <- fluidPage(
   theme = shinythemes::shinytheme("cosmo"),
   
-  titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100),
+  tags$style(HTML("
+    .logo { margin-left: 5%; margin-right: 5%; }
+  ")),
+  
+  titlePanel(title = div(img(src = "logo.jpg", height = 187, width = 100, class = "logo"),
                          "TF DEACoN"),
              windowTitle = "TF DEACoN"
   ),
@@ -51,7 +55,9 @@ ui <- fluidPage(
              tabPanel("Help",
                       includeMarkdown("help.Rmd")),
              tabPanel("Citations",
-                      includeMarkdown("citations.Rmd"))
+                      includeMarkdown("citations.Rmd")),
+             tabPanel("Contact",
+                      includeMarkdown("contact.Rmd"))
   )
 )
 
@@ -63,7 +69,7 @@ alltarg <- read.csv("input/alltarg.txt",
 
 # targcounts = genome target counts for all TFs
 #   becomes basis of results dataframe
-targcounts <- read.csv("input/targcounts.txt",
+targcounts <- read.csv("input/targcounts.csv",
                        header = TRUE)
 
 ##### Server #####
@@ -99,7 +105,7 @@ server <- function(input, output, session) {
   # Calculations to be performed when Submit is pressed
   observeEvent(input$submit, {
     # Find location of all valid gene names
-    locs <- reactive({gregexpr("AT[1-5]G[0-9][0-9][0-9][0-9]0", input$query, ignore.case = TRUE)})
+    locs <- reactive({gregexpr("AT[1-5]G[0-9][0-9][0-9][0-9][0-9]", input$query, ignore.case = TRUE)})
     
     # Validate that there is at least 1 valid AT ID
     validate(need(as.vector(locs()[[1]]) != -1, "Please enter a valid AT ID"))
